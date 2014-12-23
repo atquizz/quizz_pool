@@ -1,0 +1,10 @@
+name = Question Pool
+package = Quiz Question
+description = Question pool for quiz.
+core = 7.x
+
+dependencies[] = quizz
+dependencies[] = quizz_question
+dependencies[] = entityreference
+
+files[] = tests/PoolQuestionTestCase.test
