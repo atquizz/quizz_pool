@@ -40,7 +40,7 @@ class QuestionTypeInstaller {
           'field_name'   => $this->field_name,
           'foreign keys' => array(
               'quiz_question' => array(
-                  'table'   => 'quiz_question',
+                  'table'   => 'quiz_question_entity',
                   'columns' => array('target_id' => 'qid')
               )
           ),
