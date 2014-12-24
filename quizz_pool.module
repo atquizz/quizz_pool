@@ -4,9 +4,9 @@ use Drupal\quizz_pool\QuestionTypeInstaller;
 use Drupal\quizz_question\Entity\QuestionType;
 
 /**
- * Implements hook_quiz_question_info().
+ * Implements hook_quizz_question_info().
  */
-function quizz_pool_quiz_question_info() {
+function quizz_pool_quizz_question_info() {
   return array(
       'pool' => array(
           'name'              => t('Question pool'),
