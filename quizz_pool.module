@@ -66,7 +66,7 @@ function quizz_pool_form_alter(&$form, $form_state, $form_id) {
  */
 function quizz_pool_field_ui_field_edit_form_after_build(&$form) {
   $form['field']['settings']['target_type']['#disabled'] = TRUE;
-  $form['field']['settings']['target_type']['#value'] = 'quiz_question';
+  $form['field']['settings']['target_type']['#value'] = 'quiz_question_entity';
   foreach (element_children($form['field']['settings']['handler']['handler_settings']['target_bundles']) as $type) {
     if ($question_type = quizz_question_type_load($type)) {
       if (!in_array($question_type->handler, array('multichoice', 'truefalse', 'matching'))) {

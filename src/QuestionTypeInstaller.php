@@ -13,7 +13,7 @@ class QuestionTypeInstaller {
     $this->doCreateFieldInstance($question_type);
 
     // Override default weight to make body field appear first
-    if ($instance = field_read_instance('quiz_question', 'quiz_question_body', $question_type->type)) {
+    if ($instance = field_read_instance('quiz_question_entity', 'quiz_question_body', $question_type->type)) {
       $instance['widget']['weight'] = -10;
       $instance['widget']['settings']['rows'] = 6;
       field_update_instance($instance);
@@ -39,7 +39,7 @@ class QuestionTypeInstaller {
           'entity_types' => array(),
           'field_name'   => $this->field_name,
           'foreign keys' => array(
-              'quiz_question' => array(
+              'quiz_question_entity' => array(
                   'table'   => 'quiz_question_entity',
                   'columns' => array('target_id' => 'qid')
               )
@@ -50,7 +50,7 @@ class QuestionTypeInstaller {
           'translatable' => 0,
           'type'         => 'entityreference',
           'settings'     => array(
-              'target_type'      => 'quiz_question',
+              'target_type'      => 'quiz_question_entity',
               'handler'          => 'base',
               'handler_settings' => array(
                   'target_bundles' => $this->getTargetBundles(),
@@ -73,10 +73,10 @@ class QuestionTypeInstaller {
   }
 
   private function doCreateFieldInstance(QuestionType $question_type) {
-    if (!field_info_instance('quiz_question', $this->field_name, $question_type->type)) {
+    if (!field_info_instance('quiz_question_entity', $this->field_name, $question_type->type)) {
       field_create_instance(array(
           'field_name'  => $this->field_name,
-          'entity_type' => 'quiz_question',
+          'entity_type' => 'quiz_question_entity',
           'bundle'      => $question_type->type,
           'label'       => 'Question reference',
           'description' => 'Question that this pool contains',

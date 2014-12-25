@@ -30,11 +30,11 @@ class PoolQuestionHandler extends QuestionHandler {
 
     // Referenced question maybe deleted. Remove them if it was
     /// @TODO: This should be resolved at entityreference module
-    $ref_items = field_get_items('quiz_question', $this->question, 'field_question_reference');
+    $ref_items = field_get_items('quiz_question_entity', $this->question, 'field_question_reference');
     $this->question->field_question_reference['und'] = array();
     $field_items = &$this->question->field_question_reference['und'];
     foreach ($ref_items as $ref_item) {
-      if ($ref_question = quiz_question_entity_load($ref_item['target_id'])) {
+      if ($ref_question = quizz_question_load($ref_item['target_id'])) {
         $field_items[]['target_id'] = $ref_item['target_id'];
       }
     }
@@ -48,7 +48,7 @@ class PoolQuestionHandler extends QuestionHandler {
    */
   public function view() {
     $build = parent::view();
-    $wrapper = entity_metadata_wrapper('quiz_question', $this->question);
+    $wrapper = entity_metadata_wrapper('quiz_question_entity', $this->question);
 
     /* @var $sub_question Question */
     $markup = '';
@@ -69,7 +69,7 @@ class PoolQuestionHandler extends QuestionHandler {
     if (!isset($_SESSION['quiz'][$quiz_id][$key])) {
       $_SESSION['quiz'][$quiz_id][$key] = array('passed' => FALSE, 'delta' => 0);
     }
-    $wrapper = entity_metadata_wrapper('quiz_question', $this->question);
+    $wrapper = entity_metadata_wrapper('quiz_question_entity', $this->question);
     $delta = &$session[$key]['delta'];
 
     if ($retry) {
@@ -115,7 +115,7 @@ class PoolQuestionHandler extends QuestionHandler {
    */
   public function getMaximumScore() {
     $score = 0;
-    $wrapper = entity_metadata_wrapper('quiz_question', $this->question);
+    $wrapper = entity_metadata_wrapper('quiz_question_entity', $this->question);
     /* @var $question Question */
     foreach ($wrapper->field_question_reference->getIterator() as $wrapper_question) {
       if ($question = $wrapper_question->value()) {

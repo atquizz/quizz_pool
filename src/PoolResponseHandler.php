@@ -79,7 +79,7 @@ class PoolResponseHandler extends ResponseHandler {
       $sess = $_SESSION['quiz'][$quiz_id][$key];
       $passed = isset($sess['passed']) ? $sess['passed'] : FALSE;
       $delta = isset($sess['delta']) ? $sess['delta'] : 0;
-      return entity_metadata_wrapper('quiz_question', $this->question)
+      return entity_metadata_wrapper('quiz_question_entity', $this->question)
           ->field_question_reference[$passed ? $delta - 1 : $delta]
           ->value();
     }
@@ -93,7 +93,7 @@ class PoolResponseHandler extends ResponseHandler {
       ->fetchColumn();
 
     if (!empty($question_vid)) {
-      return $question = quiz_question_entity_load(NULL, $question_vid);
+      return $question = quizz_question_load(NULL, $question_vid);
     }
   }
 
@@ -106,7 +106,7 @@ class PoolResponseHandler extends ResponseHandler {
     $passed = &$sess['passed'];
     $delta = &$sess['delta'];
 
-    $wrapper = entity_metadata_wrapper('quiz_question', $this->question);
+    $wrapper = entity_metadata_wrapper('quiz_question_entity', $this->question);
     if ($question = $wrapper->field_question_reference[$delta]->value()) {
       $result = $this->evaluateQuestion($question);
       if ($result->is_valid) {
