@@ -26,6 +26,17 @@ class QuestionTypeInstaller {
         $field['settings']['handler_settings']['target_bundles'] = $this->getTargetBundles();
       }
       $field['settings']['handler_settings']['target_bundles'][$question_type->type] = $question_type->type;
+
+      // Ensure question handlers
+      foreach (array_keys($field['settings']['handler_settings']['target_bundles']) as $type) {
+        if (!$_question_type = quizz_question_type_load($type)) {
+          unset($field['settings']['handler_settings']['target_bundles'][$type]);
+        }
+        elseif (in_array($_question_type->handler, array('multichoice', 'truefalse', 'matching'))) {
+          unset($field['settings']['handler_settings']['target_bundles'][$type]);
+        }
+      }
+
       field_update_field($field);
     }
   }

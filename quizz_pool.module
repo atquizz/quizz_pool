@@ -37,15 +37,19 @@ function quizz_pool_quiz_question_type_insert($question_type) {
  * Implements hook_field_update_field()
  */
 function quizz_pool_field_update_field($field, $prior_field, $has_data) {
-  if ('field_question_reference' === $field['field_name']) {
-    $types = $field['settings']['handler_settings']['target_bundles'];
-    foreach ($types as $type) {
-      $handler = quizz_question_type_load($type)->handler;
-      if (!in_array($handler, array('multichoice', 'truefalse', 'matching'))) {
-        throw new RuntimeException('Pool question is only currently supporting '
-        . 'multichoice, truefalse, matching question handlers. '
-        . 'Given: ' . $handler);
-      }
+  if ('field_question_reference' !== $field['field_name']) {
+    return;
+  }
+
+  foreach ($field['settings']['handler_settings']['target_bundles'] as $type) {
+    if (!$question_type = quizz_question_type_load($type)) {
+      continue;
+    }
+
+    if (!in_array($question_type->handler, array('multichoice', 'truefalse', 'matching'))) {
+      throw new RuntimeException('Pool question is only currently supporting '
+      . 'multichoice, truefalse, matching question handlers. '
+      . 'Given: ' . $question_type->handler);
     }
   }
 }
