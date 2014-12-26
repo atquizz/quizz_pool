@@ -13,7 +13,7 @@ class PoolQuestionHandler extends QuestionHandler {
 
   public function delete($single_revision = FALSE) {
     parent::delete($single_revision);
-    $query = db_delete('quiz_pool_user_answers');
+    $query = db_delete('quizz_pool_answer');
     $query->condition('question_qid', $this->question->qid);
     if ($single_revision) {
       $query->condition('question_vid', $this->question->vid);

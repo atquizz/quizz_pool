@@ -53,7 +53,7 @@ class PoolResponseHandler extends ResponseHandler {
    */
   public function getCorrectAnswer() {
     return db_query('SELECT answer, score'
-        . ' FROM {quiz_pool_user_answers}'
+        . ' FROM {quizz_pool_answer}'
         . ' WHERE question_vid = :qvid AND result_id = :rid', array(
           ':qvid' => $this->question->vid,
           ':rid'  => $this->result_id
@@ -84,7 +84,7 @@ class PoolResponseHandler extends ResponseHandler {
           ->value();
     }
 
-    $question_vid = db_select('quiz_pool_user_answers_questions', 'p')
+    $question_vid = db_select('quizz_pool_answer_questions', 'p')
       ->fields('p', array('question_vid'))
       ->condition('pool_qid', $this->question->qid)
       ->condition('pool_vid', $this->question->vid)
@@ -121,7 +121,7 @@ class PoolResponseHandler extends ResponseHandler {
       $question = $wrapper->field_question_reference[$delta - 1]->value();
     }
 
-    db_insert('quiz_pool_user_answers')
+    db_insert('quizz_pool_answer')
       ->fields(array(
           'question_qid' => $this->question->qid,
           'question_vid' => $this->question->vid,
@@ -146,7 +146,7 @@ class PoolResponseHandler extends ResponseHandler {
           'result_id'    => $this->result->result_id,
       );
 
-      db_merge('quiz_pool_user_answers_questions')
+      db_merge('quizz_pool_answer_questions')
         ->key($keys)
         ->fields($keys + array(
             'answer'       => serialize($this->answer),
@@ -177,7 +177,7 @@ class PoolResponseHandler extends ResponseHandler {
     // Question update $this->question is entity
     // Question delete $this->question is custom object.
     if (!isset($this->question->created)) {
-      db_delete('quiz_pool_user_answers_questions')
+      db_delete('quizz_pool_answer_questions')
         ->condition('pool_qid', $this->question->qid)
         ->condition('pool_vid', $this->question->vid)
         ->condition('result_id', $this->result_id)

@@ -13,7 +13,7 @@ function quizz_pool_uninstall() {
  */
 function quizz_pool_schema() {
   // Place to store user answers for pool questions
-  $schema['quiz_pool_user_answers'] = array(
+  $schema['quizz_pool_answer'] = array(
       'fields'      => array(
           'question_qid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
           'question_vid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -26,7 +26,7 @@ function quizz_pool_schema() {
       ),
   );
 
-  $schema['quiz_pool_user_answers_questions'] = array(
+  $schema['quizz_pool_answer_questions'] = array(
       'fields'      => array(
           'pool_qid'        => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
           'pool_vid'        => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -45,44 +45,4 @@ function quizz_pool_schema() {
   );
 
   return $schema;
-}
-
-/**
- * Implements hook_quiz_question_upgrade_schema_node_to_entity().
- */
-function quizz_pool_quiz_question_upgrade_schema_node_to_entity() {
-  if (db_field_exists('quiz_pool_user_answers', 'question_nid')) {
-    db_change_field('quiz_pool_user_answers', 'question_nid', 'question_qid', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE));
-    db_change_field('quiz_pool_user_answers_questions', 'question_nid', 'question_qid', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE));
-    db_change_field('quiz_pool_user_answers_questions', 'pool_nid', 'pool_qid', array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE));
-  }
-}
-
-/**
- * Implements hook_quiz_question_upgrade_pre_drop_temp_columns().
- */
-function quizz_pool_quiz_question_upgrade_pre_drop_temp_columns() {
-  // quiz_pool_user_answers
-  db_query(
-    "UPDATE {quiz_pool_user_answers} as ua"
-    . " INNER JOIN {quiz_question_revision} qr ON ua.question_vid = qr.node_vid"
-    . " SET ua.question_qid = qr.qid, ua.question_vid = qr.vid"
-    . " WHERE 1"
-  );
-
-  // quiz_pool_user_answers_questions
-  db_query(
-    "UPDATE {quiz_pool_user_answers_questions} as uq"
-    . " INNER JOIN {quiz_question_revision} qr ON uq.question_vid = qr.node_vid"
-    . " SET uq.question_qid = qr.qid, uq.question_vid = qr.vid"
-    . " WHERE 1"
-  );
-}
-
-/**
- * Make sure update script from main module is run before all.
- */
-function quizz_pool_update_7600() {
-  require_once drupal_get_path('module', 'quizz_question') . '/quizz_question.install';
-  return quizz_question_update_7600();
 }
