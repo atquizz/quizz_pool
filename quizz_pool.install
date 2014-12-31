@@ -12,8 +12,8 @@ function quizz_pool_uninstall() {
  * Implements hook_schema().
  */
 function quizz_pool_schema() {
-  // Place to store user answers for pool questions
   $schema['quizz_pool_answer'] = array(
+      'description' => 'Place to store user answers for pool questions',
       'fields'      => array(
           'question_qid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
           'question_vid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
