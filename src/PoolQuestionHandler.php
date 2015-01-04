@@ -6,21 +6,13 @@ use Drupal\quizz_question\Entity\Question;
 use Drupal\quizz_question\QuestionHandler;
 use Drupal\quizz\Entity\Result;
 
-/**
- * Extension of QuizQuestion.
- */
 class PoolQuestionHandler extends QuestionHandler {
 
-  public function delete($single_revision = FALSE) {
-    parent::delete($single_revision);
-    $query = db_delete('quizz_pool_answer');
-    $query->condition('question_qid', $this->question->qid);
-    if ($single_revision) {
-      $query->condition('question_vid', $this->question->vid);
-    }
-    $query->execute();
-  }
+  protected $base_answer_table = 'quizz_pool_answer';
 
+  /**
+   * {@inheritdoc}
+   */
   public function load() {
     $properties = parent::load();
 
@@ -43,8 +35,25 @@ class PoolQuestionHandler extends QuestionHandler {
   }
 
   /**
-   * Implementation of getEntityView
-   * @see QuestionHandler#getEntityView()
+   * {@inheritdoc}
+   */
+  public function delete($single_revision) {
+    $key = $single_revision ? 'question_vid' : 'question_qid';
+    $id = $single_revision ? $this->question->vid : $this->question->qid;
+
+    db_query('DELETE attemp'
+      . ' FROM {quizz_pool_answer_attemp} attemp'
+      . ' INNER JOIN {quiz_answer_entity} answer ON attemp.answer_id = answer.id'
+      . " WHERE answer.{$key} = :id", array(
+        ':id' => $id
+      )
+    );
+
+    parent::delete($single_revision);
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function view() {
     $build = parent::view();
@@ -110,8 +119,7 @@ class PoolQuestionHandler extends QuestionHandler {
   }
 
   /**
-   * Implementation of getMaximumScore.
-   * @see QuizQuestion#getMaximumScore()
+   * {@inheritdoc}
    */
   public function getMaximumScore() {
     $score = 0;
@@ -131,7 +139,7 @@ class PoolQuestionHandler extends QuestionHandler {
   public function onRepeatUntiCorrect(Result $result, array &$element) {
     $msg = t('The answer was incorrect. Please try again.');
     $msg .= ' ' . t('You can try with <a href="!url">another question</a>.', array(
-          '!url' => url($_GET['q'], array('query' => array('retry' => 1)))
+          '!url' => url(check_plain($_GET['q']), array('query' => array('retry' => 1)))
     ));
     return parent::onRepeatUntiCorrect($result, $element, $msg);
   }

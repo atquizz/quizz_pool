@@ -10,7 +10,7 @@ class PoolQuestionTestCase extends QuizTestCase {
 
   public static function getInfo() {
     return array(
-        'name'        => 'Question pool',
+        'name'        => 'Pool question',
         'description' => 'Test cases for pool question type.',
         'group'       => 'Quiz question',
     );
@@ -96,6 +96,10 @@ class PoolQuestionTestCase extends QuizTestCase {
     $this->drupalPost(NULL, array('question[1][answer][2]' => "1"), t('Finish'));
     $this->drupalPost(NULL, array('question[1][answer][2]' => "1"), t('Finish')); // Not sure why, in manual test case, we just need click once.
     $this->assertText('Your score: 100%');
+
+    // Try view old results
+    $this->drupalGet('quiz-result/1');
+    $this->drupalGet('quiz-result/2');
   }
 
 }
